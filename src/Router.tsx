@@ -2,6 +2,8 @@ import { useState, type ReactNode, useEffect, Children } from 'react'
 import { match } from 'path-to-regexp'
 import { EVENT_TYPE } from './consts'
 import { type IRoute } from './types'
+import { DefaultPage } from './utils/DefaultPage'
+import { getCurrentPath } from './utils/current-path'
 
 interface Props {
   routes?: IRoute[]
@@ -10,14 +12,14 @@ interface Props {
 }
 
 export const Router = ({
-  routes,
+  routes = [],
   defaultPage = DefaultPage,
   children,
 }: Props) => {
   const { path: currentPath } = usePath()
 
   const childrenRouteParser = getRouteFromChildren(children)
-  const allRoutes = routes?.concat(childrenRouteParser)
+  const allRoutes = routes?.concat(childrenRouteParser).filter(Boolean)
 
   let paramsUrl = {}
 
@@ -57,13 +59,11 @@ const getRouteFromChildren = (children: any) => {
 }
 
 const usePath = () => {
-  const [currentPath, setCurrentPath] = useState<string>(
-    window.location.pathname,
-  )
+  const [currentPath, setCurrentPath] = useState<string>(() => getCurrentPath())
 
   useEffect(() => {
     const onLocationChange = () => {
-      setCurrentPath(window.location.pathname)
+      setCurrentPath(getCurrentPath())
     }
 
     window.addEventListener(EVENT_TYPE.PUSHSTATE, onLocationChange)
@@ -79,5 +79,3 @@ const usePath = () => {
     path: currentPath,
   }
 }
-
-const DefaultPage = () => <h1>404</h1>

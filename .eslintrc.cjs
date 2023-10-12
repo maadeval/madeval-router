@@ -26,7 +26,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   parser: '@typescript-eslint/parser',
-  plugins: ['react'],
+  plugins: ['react', 'testing-library', 'jest-dom'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': RULES_STATE.OFF,
   },
